@@ -59,62 +59,41 @@ function woerterbuchAnwenden(text) {
 }
 
 // ------------------------------------------------------------
-// Hilfsfunktion: Text in deutsche und vietnamesische Teile aufteilen
-// Deutsche Teile = Straßennamen, Ämter, Eigennamen
-// Erkennungsmerkmale: deutsche Suffixe, oder reines ASCII + Großbuchstabe
+// Hilfsfunktion: Text anhand [D]...[/D] Tags aufteilen
+// [D]...[/D] = deutsche Wörter (vom LLM markiert) → Browser spricht Deutsch
+// Rest = Vietnamesisch → ElevenLabs spricht Vietnamesisch
 // ------------------------------------------------------------
 function textInSegmenteAufteilen(text) {
-  // Wörter mit typisch deutschen Endungen (Straße, Platz, Amt, ...)
-  const deutscheSuffixe = /straße|platz|weg|allee|bahnhof|amt|haus|gasse|ring|damm|brücke|tor$/i;
-
-  // Vietnamesische Sonderzeichen (kommen in deutschen Wörtern nie vor)
-  const vietnamesischeZeichen = /[àáảãạăắặằẵẳâấầẩẫậđèéẹêềếệểễìíịĩỉòóọôồốộổỗơờớợởỡùúụưừứựửữỳýỵỷỹÀÁẢÃẠĂẮẶẰẴẲÂẤẦẨẪẬĐÈÉẸÊỀẾỆỂỄÌÍỊĨỈÒÓỌÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤƯỪỨỰỬỮỲÝỴỶỸ]/;
-
-  // Prüft ob ein einzelnes Wort deutsch ist
-  function istDeutsch(wort) {
-    if (/ß/.test(wort)) return true;               // ß = immer Deutsch
-    if (deutscheSuffixe.test(wort)) return true;   // Straße, Platz, etc.
-    // Großbuchstabe + nur ASCII + länger als 2 Zeichen = wahrscheinlich Deutsch
-    if (/^[A-ZÄÖÜ]/.test(wort) && !vietnamesischeZeichen.test(wort) && wort.length > 2) {
-      return true;
-    }
-    return false;
-  }
-
-  // Text Wort für Wort durchgehen und Segmente bilden
-  const teile = text.split(/(\s+)/);
   const segmente = [];
-  let aktuellerText = '';
-  let aktuellerTyp  = 'vietnamesisch';
+  const regex = /\[D\](.*?)\[\/D\]/gs;
+  let letztePos = 0;
+  let match;
 
-  for (const teil of teile) {
-    if (/^\s+$/.test(teil)) {
-      // Leerzeichen: zum aktuellen Segment hinzufügen
-      aktuellerText += teil;
-      continue;
+  while ((match = regex.exec(text)) !== null) {
+    // Vietnamesischer Teil vor dem deutschen Tag
+    if (match.index > letztePos) {
+      const viet = text.slice(letztePos, match.index).trim();
+      if (viet) segmente.push({ typ: 'vietnamesisch', text: viet });
     }
-
-    const neuerTyp = istDeutsch(teil) ? 'deutsch' : 'vietnamesisch';
-
-    if (neuerTyp !== aktuellerTyp && aktuellerText.trim()) {
-      // Typ wechselt: aktuelles Segment speichern, neues beginnen
-      segmente.push({ typ: aktuellerTyp, text: aktuellerText.trim() });
-      aktuellerText = teil;
-      aktuellerTyp  = neuerTyp;
-    } else {
-      aktuellerText += teil;
-      aktuellerTyp   = neuerTyp;
-    }
+    // Deutschen Teil hinzufügen
+    if (match[1].trim()) segmente.push({ typ: 'deutsch', text: match[1].trim() });
+    letztePos = match.index + match[0].length;
   }
 
-  // Letztes Segment hinzufügen
-  if (aktuellerText.trim()) {
-    segmente.push({ typ: aktuellerTyp, text: aktuellerText.trim() });
+  // Restlicher vietnamesischer Text nach dem letzten Tag
+  if (letztePos < text.length) {
+    const rest = text.slice(letztePos).trim();
+    if (rest) segmente.push({ typ: 'vietnamesisch', text: rest });
   }
 
   return segmente.length > 0
     ? segmente
     : [{ typ: 'vietnamesisch', text: text }];
+}
+
+// Entfernt [D]...[/D] Tags für die Anzeige
+function tagsEntfernen(text) {
+  return text.replace(/\[D\](.*?)\[\/D\]/gs, '$1');
 }
 
 // ============================================================
@@ -164,7 +143,10 @@ app.post('/api/uebersetzen', async (req, res) => {
     const roheUebersetzung = await textUebersetzen(text);
 
     // Schritt 2: Wörterbuch anwenden (nordviet. Wörter → südviet. Wörter)
-    const suedVietnamesisch = woerterbuchAnwenden(roheUebersetzung);
+    const mitTags = woerterbuchAnwenden(roheUebersetzung);
+
+    // Schritt 3: [D] Tags für Anzeige entfernen
+    const suedVietnamesisch = tagsEntfernen(mitTags);
 
     console.log(`  ✅ Übersetzt: "${suedVietnamesisch.slice(0, 80)}..."`);
 
@@ -193,14 +175,28 @@ app.post('/api/vorlesen', async (req, res) => {
 
     console.log('\n🔊 Vorlese-Anfrage erhalten...');
 
-    // Gesamten Text direkt an ElevenLabs schicken
-    const audioBuffer = await vietnamesischSprechen(text);
-    const ergebnisSegmente = [{
-      typ:   'elevenlabs',
-      audio: audioBuffer.toString('base64'),
-    }];
+    // Text anhand [D] Tags aufteilen
+    const segmente = textInSegmenteAufteilen(text);
+    console.log(`  → ${segmente.length} Segmente gefunden`);
 
-    console.log(`  ✅ Audio erstellt`);
+    const ergebnisSegmente = [];
+
+    for (const segment of segmente) {
+      if (segment.typ === 'vietnamesisch' && segment.text.trim()) {
+        const audioBuffer = await vietnamesischSprechen(segment.text);
+        ergebnisSegmente.push({
+          typ:   'elevenlabs',
+          audio: audioBuffer.toString('base64'),
+        });
+      } else if (segment.typ === 'deutsch' && segment.text.trim()) {
+        ergebnisSegmente.push({
+          typ:  'deutsch',
+          text: segment.text,
+        });
+      }
+    }
+
+    console.log(`  ✅ Audio erstellt für ${ergebnisSegmente.length} Segmente`);
     res.json({ segmente: ergebnisSegmente });
 
   } catch (fehler) {
@@ -236,16 +232,17 @@ app.post('/api/alles', async (req, res) => {
     }
 
     // Schritt 2: Übersetzen + Wörterbuch anwenden
-    const roheUebersetzung  = await textUebersetzen(erkannterText);
-    const suedVietnamesisch = woerterbuchAnwenden(roheUebersetzung);
+    const roheUebersetzung = await textUebersetzen(erkannterText);
+    const mitTags          = woerterbuchAnwenden(roheUebersetzung);
+    const anzeigeText      = tagsEntfernen(mitTags);
 
-    // Schritt 3: Audio erstellen
-    const segmente = textInSegmenteAufteilen(suedVietnamesisch);
+    // Schritt 3: Audio erstellen (mit [D] Tags segmentieren)
+    const segmente = textInSegmenteAufteilen(mitTags);
     const ergebnisSegmente = [];
 
     for (const segment of segmente) {
       if (segment.typ === 'vietnamesisch' && segment.text.trim()) {
-        const audioBuffer = await textInSpracheUmwandeln(segment.text);
+        const audioBuffer = await vietnamesischSprechen(segment.text);
         ergebnisSegmente.push({
           typ:   'elevenlabs',
           audio: audioBuffer.toString('base64'),
@@ -261,9 +258,9 @@ app.post('/api/alles', async (req, res) => {
     console.log('  ✅ Komplett-Anfrage abgeschlossen!');
 
     res.json({
-      erkannterText:  erkannterText,
-      uebersetzung:   suedVietnamesisch,
-      segmente:       ergebnisSegmente,
+      erkannterText: erkannterText,
+      uebersetzung:  anzeigeText,
+      segmente:      ergebnisSegmente,
     });
 
   } catch (fehler) {
