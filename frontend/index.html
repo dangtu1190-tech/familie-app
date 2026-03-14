@@ -43,15 +43,14 @@
       padding: 20px;
       text-align: center;
       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      border-bottom: 6px solid var(--rot);
     }
 
-    /* Drei rote Streifen unter dem Header (Flagge) */
+    /* Drei gleiche rote Streifen unter dem Header (Flagge) */
     header::after {
       content: '';
       display: block;
       margin-top: 10px;
-      height: 12px;
+      height: 11px;
       background: repeating-linear-gradient(
         to bottom,
         var(--rot) 0px,
@@ -61,7 +60,7 @@
         var(--rot) 7px,
         var(--rot) 10px,
         transparent 10px,
-        transparent 12px
+        transparent 11px
       );
     }
 
