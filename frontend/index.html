@@ -50,18 +50,11 @@
       content: '';
       display: block;
       margin-top: 10px;
-      height: 11px;
-      background: repeating-linear-gradient(
-        to bottom,
-        var(--rot) 0px,
-        var(--rot) 3px,
-        transparent 3px,
-        transparent 7px,
-        var(--rot) 7px,
-        var(--rot) 10px,
-        transparent 10px,
-        transparent 11px
-      );
+      height: 15px;
+      background:
+        linear-gradient(var(--rot), var(--rot)) 0 0 / 100% 3px no-repeat,
+        linear-gradient(var(--rot), var(--rot)) 0 6px / 100% 3px no-repeat,
+        linear-gradient(var(--rot), var(--rot)) 0 12px / 100% 3px no-repeat;
     }
 
     header h1 {
