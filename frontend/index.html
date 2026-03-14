@@ -554,17 +554,18 @@ async function uebersetzungStarten() {
 
     const uebersetzungsDaten = await uebersetzungsAntwort.json();
     const uebersetzung = uebersetzungsDaten.uebersetzung;
+    const uebersetzungMitTags = uebersetzungsDaten.uebersetzungMitTags || uebersetzung;
 
-    // Übersetzung anzeigen
+    // Übersetzung anzeigen (ohne Tags)
     document.getElementById('uebersetzung-text').textContent = uebersetzung;
     document.getElementById('karte-uebersetzung').style.display = 'block';
 
-    // Schritt 3: Audio erstellen
+    // Schritt 3: Audio erstellen (mit Tags für Segmentierung)
     ladeSchrittAktualisieren('🔊 Audio wird erstellt...');
     const audioAntwort = await fetch('/api/vorlesen', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ text: uebersetzung }),
+      body:    JSON.stringify({ text: uebersetzungMitTags }),
     });
 
     if (!audioAntwort.ok) {

@@ -150,7 +150,8 @@ app.post('/api/uebersetzen', async (req, res) => {
 
     console.log(`  ✅ Übersetzt: "${suedVietnamesisch.slice(0, 80)}..."`);
 
-    res.json({ uebersetzung: suedVietnamesisch });
+    // mitTags für Audio zurückgeben, suedVietnamesisch für Anzeige
+    res.json({ uebersetzung: suedVietnamesisch, uebersetzungMitTags: mitTags });
 
   } catch (fehler) {
     console.error('❌ Übersetzungsfehler:', fehler.message);
