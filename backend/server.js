@@ -193,31 +193,14 @@ app.post('/api/vorlesen', async (req, res) => {
 
     console.log('\n🔊 Vorlese-Anfrage erhalten...');
 
-    // Text in deutsche und vietnamesische Teile aufteilen
-    const segmente = textInSegmenteAufteilen(text);
-    console.log(`  → ${segmente.length} Segmente gefunden`);
+    // Gesamten Text direkt an ElevenLabs schicken
+    const audioBuffer = await vietnamesischSprechen(text);
+    const ergebnisSegmente = [{
+      typ:   'elevenlabs',
+      audio: audioBuffer.toString('base64'),
+    }];
 
-    const ergebnisSegmente = [];
-
-    for (const segment of segmente) {
-      if (segment.typ === 'vietnamesisch' && segment.text.trim()) {
-        // Vietnamesisch → Microsoft Edge TTS (kostenlos, hohe Qualität)
-        const audioBuffer = await vietnamesischSprechen(segment.text);
-        ergebnisSegmente.push({
-          typ:   'elevenlabs', // gleicher Typ → Frontend spielt es gleich ab
-          audio: audioBuffer.toString('base64'),
-        });
-
-      } else if (segment.typ === 'deutsch' && segment.text.trim()) {
-        // Deutsch → Browser Web Speech API (deutsche Stimme)
-        ergebnisSegmente.push({
-          typ:  'deutsch',
-          text: segment.text,
-        });
-      }
-    }
-
-    console.log(`  ✅ Audio erstellt für ${ergebnisSegmente.length} Segmente`);
+    console.log(`  ✅ Audio erstellt`);
     res.json({ segmente: ergebnisSegmente });
 
   } catch (fehler) {
