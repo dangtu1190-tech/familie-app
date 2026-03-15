@@ -54,6 +54,7 @@ async function textUebersetzen(deutscherText) {
   const antwort = await client.chat.completions.create({
     model: MODELL,
     max_tokens: 4096,
+    temperature: 0,
     messages: [
       {
         role: 'system',
