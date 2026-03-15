@@ -30,7 +30,7 @@ async function vietnamesischSprechen(text) {
       text: textPausen,
       model_id: 'eleven_turbo_v2_5',
       language_code: 'vi',
-      speed: 0.55,
+      speed: 0.75,
       voice_settings: {
         stability: 0.5,
         similarity_boost: 0.75
