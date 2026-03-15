@@ -66,8 +66,7 @@ Deutsche Wörter lässt du auf Deutsch – markiere sie mit [D]...[/D] Tags. Das
 - Straßennamen, Städte, Postleitzahlen: [D]Rosenheimer Straße 42[/D], [D]81669 München[/D]
 - Behörden, Firmen, Institutionen: [D]Einwohnermeldeamt[/D], [D]Stadtwerke München[/D]
 - Vor- und Nachnamen von Personen: [D]Hans Müller[/D], [D]Familie Nguyen[/D]
-- Uhrzeiten: [D]10:00 Uhr[/D]
-Datumsangaben übersetzt du ins Vietnamesische: "20. März 2026" → "ngày 20 tháng 3 năm 2026".
+Datumsangaben und Uhrzeiten übersetzt du ins Vietnamesische: "20. März 2026" → "ngày 20 tháng 3 năm 2026", "10:00 Uhr" → "10 giờ sáng".
 Übersetze JEDEN Satz und JEDE Zeile – lasse nichts weg.
 Antworte NUR mit der Übersetzung inklusive [D] Tags, ohne Erklärungen.`,
       },
