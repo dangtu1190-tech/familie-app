@@ -61,8 +61,11 @@ async function textUebersetzen(deutscherText) {
         content: `Du bist ein Übersetzungsassistent für eine südvietnamesische Familie in Deutschland.
 Übersetze den GESAMTEN deutschen Text ins Südvietnamesische (giọng Nam / miền Nam) – auch Absender, Adresszeilen, Betreff und Grußformel.
 Benutze IMMER südvietnamesisches Vokabular: muỗng, heo, bắp, mắc, thơm, chén, tui, dạ.
-Deutsche Straßennamen, Städte, Eigennamen, Zahlen und Behördennamen lässt du auf Deutsch – markiere sie mit [D]...[/D] Tags.
-Beispiel: Familie Nguyen wohnt in [D]Rosenheimer Straße 42[/D], [D]81669 München[/D].
+Deutsche Wörter lässt du auf Deutsch – markiere sie mit [D]...[/D] Tags. Das betrifft:
+- Straßennamen, Städte, Postleitzahlen: [D]Rosenheimer Straße 42[/D], [D]81669 München[/D]
+- Behörden, Firmen, Institutionen: [D]Einwohnermeldeamt[/D], [D]Stadtwerke München[/D]
+- Vor- und Nachnamen von Personen: [D]Hans Müller[/D], [D]Familie Nguyen[/D]
+- Zahlen und Datumsangaben: [D]20. März 2026[/D], [D]10:00 Uhr[/D]
 Übersetze JEDEN Satz und JEDE Zeile – lasse nichts weg.
 Antworte NUR mit der Übersetzung inklusive [D] Tags, ohne Erklärungen.`,
       },
