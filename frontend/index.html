@@ -472,23 +472,47 @@ function bildAusgewaehlt(input) {
   const datei = input.files[0];
   if (!datei) return;
 
-  aktuellerMimeType = datei.type || 'image/jpeg';
+  aktuellerMimeType = 'image/jpeg';
 
-  // Bild als Base64 lesen
+  // Bild laden und auf max 1200px verkleinern (spart Tokens + schneller)
   const leser = new FileReader();
   leser.onload = function(e) {
-    aktuellesBild = e.target.result.split(',')[1]; // Nur den Base64-Teil
+    const img = new Image();
+    img.onload = function() {
+      // Bild verkleinern auf max 1200px (längste Seite)
+      const MAX = 1200;
+      let breite = img.width;
+      let hoehe  = img.height;
+      if (breite > MAX || hoehe > MAX) {
+        if (breite > hoehe) {
+          hoehe  = Math.round(hoehe * MAX / breite);
+          breite = MAX;
+        } else {
+          breite = Math.round(breite * MAX / hoehe);
+          hoehe  = MAX;
+        }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width  = breite;
+      canvas.height = hoehe;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, breite, hoehe);
 
-    // Vorschau anzeigen
-    document.getElementById('vorschau-bild').src = e.target.result;
-    document.getElementById('vorschau-bereich').style.display = 'block';
-    document.getElementById('btn-uebersetzen').style.display = 'flex';
+      const komprimiert = canvas.toDataURL('image/jpeg', 0.7);
+      aktuellesBild = komprimiert.split(',')[1];
 
-    // Vorherige Ergebnisse verstecken
-    fehlerVerstecken();
-    document.getElementById('karte-erkannt').style.display    = 'none';
-    document.getElementById('karte-uebersetzung').style.display = 'none';
-    document.getElementById('neu-starten').style.display = 'none';
+      // Vorschau anzeigen
+      document.getElementById('vorschau-bild').src = komprimiert;
+      document.getElementById('vorschau-bereich').style.display = 'block';
+      document.getElementById('btn-uebersetzen').style.display = 'flex';
+
+      // Vorherige Ergebnisse verstecken
+      fehlerVerstecken();
+      document.getElementById('karte-erkannt').style.display    = 'none';
+      document.getElementById('karte-uebersetzung').style.display = 'none';
+      document.getElementById('neu-starten').style.display = 'none';
+    };
+    img.src = e.target.result;
   };
   leser.readAsDataURL(datei);
 

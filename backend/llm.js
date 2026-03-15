@@ -24,6 +24,7 @@ async function textAusFotoLesen(bildBase64, bildMimeType = 'image/jpeg') {
   const antwort = await client.chat.completions.create({
     model: MODELL_OCR,
     max_tokens: 2048,
+    timeout: 30000,
     messages: [
       {
         role: 'user',
@@ -56,6 +57,7 @@ async function textUebersetzen(deutscherText) {
     model: MODELL_UEBERSETZUNG,
     max_tokens: 4096,
     temperature: 0,
+    timeout: 30000,
     messages: [
       {
         role: 'system',
