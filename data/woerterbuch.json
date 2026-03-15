@@ -1,38 +1,71 @@
 [
-  {
-    "nord": "Từ điển gia đình – giọng Nam",
-    "sued": "Từ điển gia đình – giọng Nam"
-  },
-  {
-    "nord": "Kategorie",
-    "sued": "Kategorie"
-  },
-  {
-    "nord": "️ Essen & Trinken",
-    "sued": "️ Essen & Trinken"
-  },
-  {
-    "nord": " Alltag & Haushalt",
-    "sued": " Alltag & Haushalt"
-  },
-  {
-    "nord": " Begrüßung & Kommunikation",
-    "sued": " Begrüßung & Kommunikation"
-  },
-  {
-    "nord": " Zahlen & wichtige Wörter",
-    "sued": " Zahlen & wichtige Wörter"
-  },
-  {
-    "nord": " Arzt & Gesundheit",
-    "sued": " Arzt & Gesundheit"
-  },
-  {
-    "nord": "️ Amt & Behörden",
-    "sued": "️ Amt & Behörden"
-  },
-  {
-    "nord": "️ Deutsche Wörter – immer Deutsch aussprechen!",
-    "sued": "️ Deutsche Wörter – immer Deutsch aussprechen!"
-  }
+  { "nord": "thìa", "sued": "muỗng" },
+  { "nord": "lợn", "sued": "heo" },
+  { "nord": "ngô", "sued": "bắp" },
+  { "nord": "đắt", "sued": "mắc" },
+  { "nord": "dứa", "sued": "thơm" },
+  { "nord": "bát", "sued": "chén" },
+  { "nord": "vâng", "sued": "dạ" },
+  { "nord": "hoa quả", "sued": "trái cây" },
+  { "nord": "ô tô", "sued": "xe hơi" },
+  { "nord": "ốm", "sued": "bệnh" },
+  { "nord": "đau bụng", "sued": "đau bụng" },
+  { "nord": "bệnh viện", "sued": "bệnh viện" },
+  { "nord": "cái gì", "sued": "cái gì" },
+  { "nord": "cốc", "sued": "ly" },
+  { "nord": "đĩa", "sued": "dĩa" },
+  { "nord": "tôi", "sued": "tui" },
+  { "nord": "chúng tôi", "sued": "tụi tui" },
+  { "nord": "anh ấy", "sued": "ảnh" },
+  { "nord": "chị ấy", "sued": "chỉ" },
+  { "nord": "họ", "sued": "tụi nó" },
+  { "nord": "nhà", "sued": "nhà" },
+  { "nord": "phòng", "sued": "phòng" },
+  { "nord": "tiền", "sued": "tiền" },
+  { "nord": "mua", "sued": "mua" },
+  { "nord": "bán", "sued": "bán" },
+  { "nord": "xe đạp", "sued": "xe đạp" },
+  { "nord": "xe máy", "sued": "xe gắn máy" },
+  { "nord": "đi bộ", "sued": "đi bộ" },
+  { "nord": "nhanh", "sued": "lẹ" },
+  { "nord": "chậm", "sued": "chậm" },
+  { "nord": "to", "sued": "lớn" },
+  { "nord": "bé", "sued": "nhỏ" },
+  { "nord": "nhiều", "sued": "nhiều" },
+  { "nord": "ít", "sued": "ít" },
+  { "nord": "đồ ăn", "sued": "thức ăn" },
+  { "nord": "uống nước", "sued": "uống nước" },
+  { "nord": "cơm", "sued": "cơm" },
+  { "nord": "thịt", "sued": "thịt" },
+  { "nord": "cá", "sued": "cá" },
+  { "nord": "rau", "sued": "rau" },
+  { "nord": "đường", "sued": "đường" },
+  { "nord": "muối", "sued": "muối" },
+  { "nord": "dầu", "sued": "dầu" },
+  { "nord": "nước mắm", "sued": "nước mắm" },
+  { "nord": "giấy tờ", "sued": "giấy tờ" },
+  { "nord": "đăng ký", "sued": "đăng ký" },
+  { "nord": "hẹn", "sued": "hẹn" },
+  { "nord": "cuộc hẹn", "sued": "cuộc hẹn" },
+  { "nord": "quan trọng", "sued": "quan trọng" },
+  { "nord": "khẩn cấp", "sued": "gấp" },
+  { "nord": "cần thiết", "sued": "cần thiết" },
+  { "nord": "mang theo", "sued": "mang theo" },
+  { "nord": "nộp", "sued": "nộp" },
+  { "nord": "chứng minh thư", "sued": "chứng minh nhân dân" },
+  { "nord": "hộ chiếu", "sued": "hộ chiếu" },
+  { "nord": "địa chỉ", "sued": "địa chỉ" },
+  { "nord": "thành phố", "sued": "thành phố" },
+  { "nord": "bưu điện", "sued": "bưu điện" },
+  { "nord": "ngân hàng", "sued": "ngân hàng" },
+  { "nord": "bảo hiểm", "sued": "bảo hiểm" },
+  { "nord": "sức khỏe", "sued": "sức khỏe" },
+  { "nord": "thuốc", "sued": "thuốc" },
+  { "nord": "bác sĩ", "sued": "bác sĩ" },
+  { "nord": "xin chào", "sued": "xin chào" },
+  { "nord": "cảm ơn", "sued": "cảm ơn" },
+  { "nord": "xin lỗi", "sued": "xin lỗi" },
+  { "nord": "vui lòng", "sued": "vui lòng" },
+  { "nord": "trân trọng", "sued": "trân trọng" },
+  { "nord": "kính chào", "sued": "kính chào" }
 ]
