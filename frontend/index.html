@@ -475,44 +475,13 @@ function bildAusgewaehlt(input) {
   aktuellerMimeType = 'image/jpeg';
 
   // Bild laden und auf max 1200px verkleinern (spart Tokens + schneller)
+  // Unterstützt auch HEIC-Dateien (iPhone)
   const leser = new FileReader();
   leser.onload = function(e) {
-    const img = new Image();
-    img.onload = function() {
-      // Bild verkleinern auf max 1200px (längste Seite)
-      const MAX = 1200;
-      let breite = img.width;
-      let hoehe  = img.height;
-      if (breite > MAX || hoehe > MAX) {
-        if (breite > hoehe) {
-          hoehe  = Math.round(hoehe * MAX / breite);
-          breite = MAX;
-        } else {
-          breite = Math.round(breite * MAX / hoehe);
-          hoehe  = MAX;
-        }
-      }
-      const canvas = document.createElement('canvas');
-      canvas.width  = breite;
-      canvas.height = hoehe;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, breite, hoehe);
-
-      const komprimiert = canvas.toDataURL('image/jpeg', 0.7);
-      aktuellesBild = komprimiert.split(',')[1];
-
-      // Vorschau anzeigen
-      document.getElementById('vorschau-bild').src = komprimiert;
-      document.getElementById('vorschau-bereich').style.display = 'block';
-      document.getElementById('btn-uebersetzen').style.display = 'flex';
-
-      // Vorherige Ergebnisse verstecken
-      fehlerVerstecken();
-      document.getElementById('karte-erkannt').style.display    = 'none';
-      document.getElementById('karte-uebersetzung').style.display = 'none';
-      document.getElementById('neu-starten').style.display = 'none';
-    };
-    img.src = e.target.result;
+    bildKomprimieren(e.target.result);
+  };
+  leser.onerror = function() {
+    fehlerAnzeigen('Foto konnte nicht geladen werden. Bitte nochmal versuchen.');
   };
   leser.readAsDataURL(datei);
 
@@ -790,6 +759,83 @@ function audioStatusAktualisieren(text) {
 // Fortschrittsbalken aktualisieren
 function fortschrittAktualisieren(prozent) {
   document.getElementById('fortschritt-fill').style.width = prozent + '%';
+}
+
+// ── Hilfsfunktion: Bild komprimieren (HEIC/JPEG/PNG → JPEG 1200px) ──
+function bildKomprimieren(dataUrl) {
+  const img = new Image();
+  img.onload = function() {
+    const MAX = 1200;
+    let breite = img.width;
+    let hoehe  = img.height;
+    if (breite > MAX || hoehe > MAX) {
+      if (breite > hoehe) {
+        hoehe  = Math.round(hoehe * MAX / breite);
+        breite = MAX;
+      } else {
+        breite = Math.round(breite * MAX / hoehe);
+        hoehe  = MAX;
+      }
+    }
+    const canvas = document.createElement('canvas');
+    canvas.width  = breite;
+    canvas.height = hoehe;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, breite, hoehe);
+
+    const komprimiert = canvas.toDataURL('image/jpeg', 0.7);
+    aktuellesBild = komprimiert.split(',')[1];
+
+    document.getElementById('vorschau-bild').src = komprimiert;
+    document.getElementById('vorschau-bereich').style.display = 'block';
+    document.getElementById('btn-uebersetzen').style.display = 'flex';
+
+    fehlerVerstecken();
+    document.getElementById('karte-erkannt').style.display    = 'none';
+    document.getElementById('karte-uebersetzung').style.display = 'none';
+    document.getElementById('neu-starten').style.display = 'none';
+  };
+  img.onerror = function() {
+    // HEIC-Fallback: Bild als Blob an createImageBitmap senden
+    fetch(dataUrl)
+      .then(r => r.blob())
+      .then(blob => createImageBitmap(blob))
+      .then(bitmap => {
+        const MAX = 1200;
+        let breite = bitmap.width;
+        let hoehe  = bitmap.height;
+        if (breite > MAX || hoehe > MAX) {
+          if (breite > hoehe) {
+            hoehe  = Math.round(hoehe * MAX / breite);
+            breite = MAX;
+          } else {
+            breite = Math.round(breite * MAX / hoehe);
+            hoehe  = MAX;
+          }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width  = breite;
+        canvas.height = hoehe;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(bitmap, 0, 0, breite, hoehe);
+
+        const komprimiert = canvas.toDataURL('image/jpeg', 0.7);
+        aktuellesBild = komprimiert.split(',')[1];
+
+        document.getElementById('vorschau-bild').src = komprimiert;
+        document.getElementById('vorschau-bereich').style.display = 'block';
+        document.getElementById('btn-uebersetzen').style.display = 'flex';
+
+        fehlerVerstecken();
+        document.getElementById('karte-erkannt').style.display    = 'none';
+        document.getElementById('karte-uebersetzung').style.display = 'none';
+        document.getElementById('neu-starten').style.display = 'none';
+      })
+      .catch(() => {
+        fehlerAnzeigen('Dieses Bildformat wird nicht unterstützt. Bitte in den iPhone-Einstellungen unter Kamera → Formate → "Maximale Kompatibilität" wählen.');
+      });
+  };
+  img.src = dataUrl;
 }
 
 // ── Hilfsfunktion: Browser spricht Text in einer Sprache ──
