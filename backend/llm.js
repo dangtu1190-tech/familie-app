@@ -12,7 +12,8 @@ const client = new OpenAI({
   baseURL: process.env.LANGDOCK_API_URL, // z.B. https://api.langdock.com/openai/eu1/v1
 });
 
-const MODELL = process.env.LANGDOCK_MODEL || 'gpt-4.1';
+const MODELL_OCR         = process.env.LANGDOCK_MODEL         || 'gpt-4.1-eu';
+const MODELL_UEBERSETZUNG = process.env.LANGDOCK_MODEL_TRANSLATION || MODELL_OCR;
 
 // ------------------------------------------------------------
 // Funktion 1: Text aus einem Foto lesen (OCR mit Vision)
@@ -21,7 +22,7 @@ async function textAusFotoLesen(bildBase64, bildMimeType = 'image/jpeg') {
   console.log('  → GPT-4.1 liest Text aus Foto...');
 
   const antwort = await client.chat.completions.create({
-    model: MODELL,
+    model: MODELL_OCR,
     max_tokens: 2048,
     messages: [
       {
@@ -52,7 +53,7 @@ async function textUebersetzen(deutscherText) {
   console.log('  → GPT-4.1 übersetzt Text...');
 
   const antwort = await client.chat.completions.create({
-    model: MODELL,
+    model: MODELL_UEBERSETZUNG,
     max_tokens: 4096,
     temperature: 0,
     messages: [
