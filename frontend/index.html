@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Gia Đình Dịch Thuật</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 27'><rect width='40' height='27' fill='%23FFD700'/><rect y='7' width='40' height='3' fill='%23CC0000'/><rect y='12' width='40' height='3' fill='%23CC0000'/><rect y='17' width='40' height='3' fill='%23CC0000'/></svg>" />
+
+  <style>
+    /* ========================================================
+       GRUNDDESIGN: Weiß + Rot (vietnamesische Farben)
+       Große Schrift für ältere Familienmitglieder
+    ======================================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --gelb:       #FFD700;   /* Vàng Việt Nam Cộng Hòa */
+      --gelb-dunkel:#E6B800;
+      --gelb-hell:  #FFFBE6;
+      --rot:        #CC0000;   /* Đỏ Việt Nam Cộng Hòa */
+      --rot-dunkel: #990000;
+      --grau:       #f5f5f5;
+      --text:       #222;
+      --radius:     16px;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Arial', sans-serif;
+      font-size: 18px;          /* Große Schrift für ältere Nutzer */
+      background: #fff;
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Kopfzeile ─────────────────────────────────────────── */
+    header {
+      background: var(--gelb);
+      color: var(--rot);
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    /* Drei gleiche rote Streifen unter dem Header (Flagge) */
+    header::after {
+      content: '';
+      display: block;
+      margin-top: 10px;
+      height: 15px;
+      background:
+        linear-gradient(var(--rot), var(--rot)) 0 0 / 100% 3px no-repeat,
+        linear-gradient(var(--rot), var(--rot)) 0 6px / 100% 3px no-repeat,
+        linear-gradient(var(--rot), var(--rot)) 0 12px / 100% 3px no-repeat;
+    }
+
+    header h1 {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    header p {
+      font-size: 16px;
+      opacity: 0.9;
+    }
+
+    /* ── Hauptbereich ──────────────────────────────────────── */
+    main {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* ── Karte (weiße Box mit Schatten) ──────────────────── */
+    .karte {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      border: 1px solid #eee;
+    }
+
+    .karte h2 {
+      font-size: 20px;
+      color: var(--rot);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 2px solid var(--gelb);
+      padding-bottom: 8px;
+    }
+
+    /* ── Großer Foto-Button ────────────────────────────────── */
+    .foto-bereich {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn-foto {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: var(--rot);
+      color: var(--gelb);
+      border: none;
+      border-radius: var(--radius);
+      padding: 20px;
+      font-size: 22px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.2s, transform 0.1s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-foto:active {
+      background: var(--rot-dunkel);
+      transform: scale(0.98);
+    }
+
+    .btn-foto .icon {
+      font-size: 30px;
+    }
+
+    .btn-galerie {
+      background: var(--gelb-hell);
+      color: var(--rot);
+      border: 2px solid var(--rot);
+      border-radius: var(--radius);
+      padding: 14px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-galerie:active {
+      background: var(--gelb-dunkel);
+    }
+
+    /* Versteckte Datei-Inputs für Kamera und Galerie */
+    #input-kamera, #input-galerie {
+      display: none;
+    }
+
+    /* ── Bildvorschau ──────────────────────────────────────── */
+    #vorschau-bereich {
+      display: none;
+      margin-top: 14px;
+    }
+
+    #vorschau-bild {
+      width: 100%;
+      max-height: 280px;
+      object-fit: contain;
+      border-radius: 12px;
+      border: 2px solid #eee;
+    }
+
+    .btn-uebersetzen {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--rot);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      padding: 18px;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 12px;
+      transition: background 0.2s, transform 0.1s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-uebersetzen:active {
+      background: var(--rot-dunkel);
+      transform: scale(0.98);
+    }
+
+    /* ── Lade-Animation ────────────────────────────────────── */
+    #ladebereich {
+      display: none;
+      text-align: center;
+      padding: 30px 20px;
+    }
+
+    .ladekreis {
+      display: inline-block;
+      width: 56px;
+      height: 56px;
+      border: 5px solid var(--rot-hell);
+      border-top-color: var(--rot);
+      border-radius: 50%;
+      animation: drehen 0.8s linear infinite;
+      margin-bottom: 16px;
+    }
+
+    @keyframes drehen {
+      to { transform: rotate(360deg); }
+    }
+
+    .lade-text {
+      font-size: 18px;
+      color: #666;
+    }
+
+    .lade-schritt {
+      font-size: 15px;
+      color: var(--rot);
+      margin-top: 6px;
+      min-height: 24px;
+    }
+
+    /* ── Ergebnis-Boxen ────────────────────────────────────── */
+    .ergebnis-box {
+      background: var(--grau);
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 18px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      min-height: 60px;
+    }
+
+    .ergebnis-box.uebersetzung {
+      background: var(--gelb-hell);
+      border-left: 4px solid var(--rot);
+      font-size: 20px;      /* Übersetzung etwas größer */
+    }
+
+    /* ── Audio-Steuerung ────────────────────────────────────── */
+    .audio-steuerung {
+      display: none;
+      align-items: center;
+      gap: 14px;
+      padding: 14px;
+      background: var(--gelb-hell);
+      border-radius: var(--radius);
+      margin-top: 14px;
+    }
+
+    .btn-play {
+      background: var(--rot);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      font-size: 24px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.2s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-play:active {
+      background: var(--rot-dunkel);
+      transform: scale(0.96);
+    }
+
+    .audio-info {
+      flex: 1;
+    }
+
+    .audio-info .titel {
+      font-weight: bold;
+      font-size: 16px;
+      color: var(--rot);
+    }
+
+    .audio-info .status {
+      font-size: 14px;
+      color: #666;
+      margin-top: 2px;
+    }
+
+    /* Fortschrittsbalken */
+    .fortschritt-balken {
+      height: 4px;
+      background: #ddd;
+      border-radius: 2px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+
+    .fortschritt-fill {
+      height: 100%;
+      background: var(--rot);
+      border-radius: 2px;
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    /* ── Neu starten Button ────────────────────────────────── */
+    #neu-starten {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--gelb-hell);
+      color: var(--rot);
+      border: 2px solid var(--rot);
+      border-radius: var(--radius);
+      padding: 14px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 14px;
+    }
+
+    #neu-starten:active {
+      background: var(--gelb-dunkel);
+    }
+
+    /* ── Fehler-Meldung ────────────────────────────────────── */
+    .fehler-box {
+      background: #fff3f3;
+      border: 2px solid var(--rot);
+      border-radius: 12px;
+      padding: 16px;
+      color: var(--rot-dunkel);
+      display: none;
+      font-size: 16px;
+    }
+
+    /* ── Responsive für Desktop ────────────────────────────── */
+    @media (min-width: 600px) {
+      body { background: var(--grau); }
+      main { padding: 30px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════
+     KOPFZEILE
+════════════════════════════════════════════════════════ -->
+<header>
+  <h1>
+    <svg width="40" height="27" viewBox="0 0 40 27" style="vertical-align:middle;margin-right:8px;border:1px solid #aaa;border-radius:3px">
+      <rect width="40" height="27" fill="#FFD700"/>
+      <rect y="7" width="40" height="3" fill="#CC0000"/>
+      <rect y="12" width="40" height="3" fill="#CC0000"/>
+      <rect y="17" width="40" height="3" fill="#CC0000"/>
+    </svg>
+    Dịch Thuật Gia Đình
+  </h1>
+  <p>Foto machen → Übersetzen → Vorlesen</p>
+</header>
+
+<main>
+
+  <!-- ── KARTE 1: Foto aufnehmen ─────────────────────────── -->
+  <div class="karte" id="karte-foto">
+    <h2><span>📷</span> Foto machen</h2>
+
+    <div class="foto-bereich">
+      <!-- Kamera-Button (öffnet auf Handy die Kamera) -->
+      <button class="btn-foto" onclick="kameraOeffnen()">
+        <span class="icon">📸</span>
+        Foto aufnehmen
+      </button>
+
+      <!-- Galerie-Button (Bild aus Galerie hochladen) -->
+      <button class="btn-galerie" onclick="galerieOeffnen()">
+        🖼️ Aus Galerie auswählen
+      </button>
+    </div>
+
+    <!-- Versteckte Input-Felder für Kamera und Galerie -->
+    <input type="file" id="input-kamera"  accept="image/*" capture="environment" onchange="bildAusgewaehlt(this)" />
+    <input type="file" id="input-galerie" accept="image/*"                       onchange="bildAusgewaehlt(this)" />
+
+    <!-- Bildvorschau (erscheint nach Fotoauswahl) -->
+    <div id="vorschau-bereich">
+      <img id="vorschau-bild" src="" alt="Vorschau" />
+    </div>
+
+    <!-- Übersetzen-Button (erscheint nach Fotoauswahl) -->
+    <button class="btn-uebersetzen" id="btn-uebersetzen" onclick="uebersetzungStarten()">
+      ✨ Jetzt übersetzen
+    </button>
+  </div>
+
+  <!-- ── LADE-ANIMATION ──────────────────────────────────── -->
+  <div id="ladebereich">
+    <div class="ladekreis"></div>
+    <div class="lade-text">KI arbeitet...</div>
+    <div class="lade-schritt" id="lade-schritt">Foto wird analysiert</div>
+  </div>
+
+  <!-- ── FEHLER-BOX ──────────────────────────────────────── -->
+  <div class="fehler-box" id="fehler-box">
+    ❌ <span id="fehler-text"></span>
+  </div>
+
+  <!-- ── KARTE 2: Erkannter Text ─────────────────────────── -->
+  <div class="karte" id="karte-erkannt" style="display:none">
+    <h2>📄 Erkannter Text</h2>
+    <div class="ergebnis-box" id="erkannter-text"></div>
+  </div>
+
+  <!-- ── KARTE 3: Übersetzung ────────────────────────────── -->
+  <div class="karte" id="karte-uebersetzung" style="display:none">
+    <h2>🇻🇳 Tiếng Việt (Nam)</h2>
+    <div class="ergebnis-box uebersetzung" id="uebersetzung-text"></div>
+
+    <!-- Audio-Steuerung (Play/Stop) -->
+    <div class="audio-steuerung" id="audio-steuerung">
+      <button class="btn-play" id="btn-play" onclick="audioToggle()">▶</button>
+      <div class="audio-info">
+        <div class="titel">🔊 Vorlesen</div>
+        <div class="status" id="audio-status">Bereit zum Abspielen</div>
+        <div class="fortschritt-balken">
+          <div class="fortschritt-fill" id="fortschritt-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Neu starten -->
+    <button id="neu-starten" onclick="neuStarten()">
+      🔄 Neues Foto
+    </button>
+  </div>
+
+</main>
+
+<!-- ════════════════════════════════════════════════════════
+     JAVASCRIPT – App-Logik
+════════════════════════════════════════════════════════ -->
+<script>
+
+// ── Globale Variablen ───────────────────────────────────────
+let aktuellesBild     = null;  // Das ausgewählte Foto (Base64)
+let aktuellerMimeType = 'image/jpeg';
+let audioSegmente     = [];    // Audio-Segmente vom Backend
+let spieltGerade      = false; // Ob Audio läuft
+let aktuellerIndex    = 0;     // Welches Segment gerade gespielt wird
+let aktuellesAudio    = null;  // Das aktuelle Audio-Element
+
+// ============================================================
+// FOTO AUSWAHL
+// ============================================================
+
+function kameraOeffnen() {
+  document.getElementById('input-kamera').click();
+}
+
+function galerieOeffnen() {
+  document.getElementById('input-galerie').click();
+}
+
+function bildAusgewaehlt(input) {
+  const datei = input.files[0];
+  if (!datei) return;
+
+  aktuellerMimeType = 'image/jpeg';
+
+  // Bild laden und auf max 1200px verkleinern (spart Tokens + schneller)
+  // Unterstützt auch HEIC-Dateien (iPhone)
+  const leser = new FileReader();
+  leser.onload = function(e) {
+    bildKomprimieren(e.target.result);
+  };
+  leser.onerror = function() {
+    fehlerAnzeigen('Foto konnte nicht geladen werden. Bitte nochmal versuchen.');
+  };
+  leser.readAsDataURL(datei);
+
+  // Input zurücksetzen (damit man das gleiche Bild nochmal wählen kann)
+  input.value = '';
+}
+
+// ============================================================
+// ÜBERSETZUNG STARTEN
+// Ruft /api/alles auf: OCR + Übersetzen + Vorlesen in einem Schritt
+// ============================================================
+
+async function uebersetzungStarten() {
+  if (!aktuellesBild) {
+    fehlerAnzeigen('Bitte erst ein Foto aufnehmen');
+    return;
+  }
+
+  // Ladeanimation zeigen
+  ladeanimationZeigen('Foto wird analysiert...');
+  document.getElementById('btn-uebersetzen').style.display = 'none';
+
+  try {
+    // Schritt 1: OCR
+    ladeSchrittAktualisieren('📷 Text wird erkannt...');
+    const ocrAntwort = await fetch('/api/ocr', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ bild: aktuellesBild, mimeType: aktuellerMimeType }),
+    });
+
+    if (!ocrAntwort.ok) {
+      const err = await ocrAntwort.json();
+      throw new Error(err.fehler || 'OCR fehlgeschlagen');
+    }
+
+    const ocrDaten = await ocrAntwort.json();
+    const erkannterText = ocrDaten.text;
+
+    if (!erkannterText || erkannterText.toLowerCase().includes('kein text gefunden')) {
+      ladeanimationVerstecken();
+      fehlerAnzeigen('Kein Text im Bild gefunden. Bitte ein klareres Foto aufnehmen.');
+      document.getElementById('btn-uebersetzen').style.display = 'flex';
+      return;
+    }
+
+    // Erkannten Text anzeigen
+    document.getElementById('erkannter-text').textContent = erkannterText;
+    document.getElementById('karte-erkannt').style.display = 'block';
+
+    // Schritt 2: Übersetzen
+    ladeSchrittAktualisieren('🌐 Text wird übersetzt...');
+    const uebersetzungsAntwort = await fetch('/api/uebersetzen', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ text: erkannterText }),
+    });
+
+    if (!uebersetzungsAntwort.ok) {
+      const err = await uebersetzungsAntwort.json();
+      throw new Error(err.fehler || 'Übersetzung fehlgeschlagen');
+    }
+
+    const uebersetzungsDaten = await uebersetzungsAntwort.json();
+    const uebersetzung = uebersetzungsDaten.uebersetzung;
+    const uebersetzungMitTags = uebersetzungsDaten.uebersetzungMitTags || uebersetzung;
+
+    // Übersetzung anzeigen (ohne Tags)
+    document.getElementById('uebersetzung-text').textContent = uebersetzung;
+    document.getElementById('karte-uebersetzung').style.display = 'block';
+
+    // Schritt 3: Audio erstellen (mit Tags für Segmentierung)
+    ladeSchrittAktualisieren('🔊 Audio wird erstellt...');
+    const audioAntwort = await fetch('/api/vorlesen', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ text: uebersetzungMitTags }),
+    });
+
+    if (!audioAntwort.ok) {
+      const err = await audioAntwort.json();
+      throw new Error(err.fehler || 'Audio fehlgeschlagen');
+    }
+
+    const audioDaten = await audioAntwort.json();
+    audioSegmente = audioDaten.segmente || [];
+
+    // Fertig! Ladeanimation verstecken
+    ladeanimationVerstecken();
+
+    // Audio-Steuerung anzeigen (wenn Audio vorhanden)
+    if (audioSegmente.length > 0) {
+      document.getElementById('audio-steuerung').style.display = 'flex';
+      // Audio automatisch abspielen
+      audioAbspielen();
+    }
+
+    // Neu starten Button zeigen
+    document.getElementById('neu-starten').style.display = 'flex';
+
+  } catch (fehler) {
+    ladeanimationVerstecken();
+    fehlerAnzeigen(fehler.message);
+    document.getElementById('btn-uebersetzen').style.display = 'flex';
+  }
+}
+
+// ============================================================
+// AUDIO ABSPIELEN (zwei Stimmen)
+// Vietnamesisch → ElevenLabs (Base64 Audio)
+// Deutsch → Browser Web Speech API (deutsche Stimme)
+// ============================================================
+
+async function audioAbspielen() {
+  if (audioSegmente.length === 0) return;
+
+  spieltGerade    = true;
+  aktuellerIndex  = 0;
+  document.getElementById('btn-play').textContent = '⏹';
+  audioStatusAktualisieren('Wird abgespielt...');
+
+  await segmentAbspielen(0);
+}
+
+async function segmentAbspielen(index) {
+  if (!spieltGerade || index >= audioSegmente.length) {
+    // Alle Segmente abgespielt
+    spieltGerade = false;
+    document.getElementById('btn-play').textContent = '▶';
+    audioStatusAktualisieren('Fertig ✓');
+    fortschrittAktualisieren(100);
+    return;
+  }
+
+  aktuellerIndex = index;
+  const segment = audioSegmente[index];
+  const fortschritt = Math.round((index / audioSegmente.length) * 100);
+  fortschrittAktualisieren(fortschritt);
+
+  if (segment.typ === 'elevenlabs') {
+    // ── ElevenLabs Audio (Vietnamesisch) ──────────────────
+    audioStatusAktualisieren('🇻🇳 Tiếng Việt...');
+    await new Promise((fertig) => {
+      const audioBlob = base64ZuBlob(segment.audio, 'audio/mpeg');
+      const audioUrl  = URL.createObjectURL(audioBlob);
+      aktuellesAudio  = new Audio(audioUrl);
+
+      aktuellesAudio.onended = () => {
+        URL.revokeObjectURL(audioUrl);
+        fertig();
+      };
+
+      aktuellesAudio.onerror = () => {
+        URL.revokeObjectURL(audioUrl);
+        fertig(); // Fehler überspringen und weitermachen
+      };
+
+      aktuellesAudio.play().catch(() => fertig());
+    });
+
+  } else if (segment.typ === 'vietnamesisch_browser') {
+    // ── Web Speech API (Vietnamesisch, Fallback wenn ElevenLabs fehlt) ──
+    audioStatusAktualisieren('🇻🇳 Tiếng Việt (Browser)...');
+    await browserSprechen(segment.text, 'vi-VN');
+
+  } else if (segment.typ === 'deutsch') {
+    // ── Web Speech API (Deutsch) ───────────────────────────
+    audioStatusAktualisieren('🇩🇪 Deutsch...');
+    await browserSprechen(segment.text, 'de-DE');
+  }
+
+  // Nächstes Segment (wenn Audio noch läuft)
+  if (spieltGerade) {
+    await segmentAbspielen(index + 1);
+  }
+}
+
+function audioToggle() {
+  if (spieltGerade) {
+    audioStoppen();
+  } else {
+    audioAbspielen();
+  }
+}
+
+function audioStoppen() {
+  spieltGerade = false;
+
+  // ElevenLabs Audio stoppen
+  if (aktuellesAudio) {
+    aktuellesAudio.pause();
+    aktuellesAudio.currentTime = 0;
+    aktuellesAudio = null;
+  }
+
+  // Web Speech stoppen
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+
+  document.getElementById('btn-play').textContent = '▶';
+  audioStatusAktualisieren('Gestoppt');
+}
+
+// ============================================================
+// HILFSFUNKTIONEN
+// ============================================================
+
+// Base64 String → Blob (für Audio)
+function base64ZuBlob(base64, mimeType) {
+  const bytes  = atob(base64);
+  const puffer = new ArrayBuffer(bytes.length);
+  const ansicht = new Uint8Array(puffer);
+  for (let i = 0; i < bytes.length; i++) {
+    ansicht[i] = bytes.charCodeAt(i);
+  }
+  return new Blob([puffer], { type: mimeType });
+}
+
+// Neu starten: alles zurücksetzen
+function neuStarten() {
+  audioStoppen();
+  aktuellesBild    = null;
+  audioSegmente    = [];
+
+  document.getElementById('vorschau-bereich').style.display   = 'none';
+  document.getElementById('btn-uebersetzen').style.display     = 'none';
+  document.getElementById('karte-erkannt').style.display       = 'none';
+  document.getElementById('karte-uebersetzung').style.display  = 'none';
+  document.getElementById('audio-steuerung').style.display     = 'none';
+  document.getElementById('neu-starten').style.display         = 'none';
+  fehlerVerstecken();
+
+  fortschrittAktualisieren(0);
+  audioStatusAktualisieren('Bereit zum Abspielen');
+
+  // Scroll nach oben
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Ladeanimation anzeigen/verstecken
+function ladeanimationZeigen(text) {
+  document.getElementById('ladebereich').style.display = 'block';
+  document.getElementById('karte-foto').style.opacity   = '0.4';
+  document.getElementById('karte-foto').style.pointerEvents = 'none';
+  if (text) ladeSchrittAktualisieren(text);
+}
+
+function ladeanimationVerstecken() {
+  document.getElementById('ladebereich').style.display = 'none';
+  document.getElementById('karte-foto').style.opacity  = '1';
+  document.getElementById('karte-foto').style.pointerEvents = 'auto';
+}
+
+function ladeSchrittAktualisieren(text) {
+  document.getElementById('lade-schritt').textContent = text;
+}
+
+// Fehler anzeigen/verstecken
+function fehlerAnzeigen(text) {
+  const box = document.getElementById('fehler-box');
+  document.getElementById('fehler-text').textContent = text;
+  box.style.display = 'block';
+}
+
+function fehlerVerstecken() {
+  document.getElementById('fehler-box').style.display = 'none';
+}
+
+// Audio-Status aktualisieren
+function audioStatusAktualisieren(text) {
+  document.getElementById('audio-status').textContent = text;
+}
+
+// Fortschrittsbalken aktualisieren
+function fortschrittAktualisieren(prozent) {
+  document.getElementById('fortschritt-fill').style.width = prozent + '%';
+}
+
+// ── Hilfsfunktion: Bild komprimieren (HEIC/JPEG/PNG → JPEG 1200px) ──
+function bildKomprimieren(dataUrl) {
+  const img = new Image();
+  img.onload = function() {
+    const MAX = 1200;
+    let breite = img.width;
+    let hoehe  = img.height;
+    if (breite > MAX || hoehe > MAX) {
+      if (breite > hoehe) {
+        hoehe  = Math.round(hoehe * MAX / breite);
+        breite = MAX;
+      } else {
+        breite = Math.round(breite * MAX / hoehe);
+        hoehe  = MAX;
+      }
+    }
+    const canvas = document.createElement('canvas');
+    canvas.width  = breite;
+    canvas.height = hoehe;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, breite, hoehe);
+
+    const komprimiert = canvas.toDataURL('image/jpeg', 0.7);
+    aktuellesBild = komprimiert.split(',')[1];
+
+    document.getElementById('vorschau-bild').src = komprimiert;
+    document.getElementById('vorschau-bereich').style.display = 'block';
+    document.getElementById('btn-uebersetzen').style.display = 'flex';
+
+    fehlerVerstecken();
+    document.getElementById('karte-erkannt').style.display    = 'none';
+    document.getElementById('karte-uebersetzung').style.display = 'none';
+    document.getElementById('neu-starten').style.display = 'none';
+  };
+  img.onerror = function() {
+    // HEIC-Fallback: Bild als Blob an createImageBitmap senden
+    fetch(dataUrl)
+      .then(r => r.blob())
+      .then(blob => createImageBitmap(blob))
+      .then(bitmap => {
+        const MAX = 1200;
+        let breite = bitmap.width;
+        let hoehe  = bitmap.height;
+        if (breite > MAX || hoehe > MAX) {
+          if (breite > hoehe) {
+            hoehe  = Math.round(hoehe * MAX / breite);
+            breite = MAX;
+          } else {
+            breite = Math.round(breite * MAX / hoehe);
+            hoehe  = MAX;
+          }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width  = breite;
+        canvas.height = hoehe;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(bitmap, 0, 0, breite, hoehe);
+
+        const komprimiert = canvas.toDataURL('image/jpeg', 0.7);
+        aktuellesBild = komprimiert.split(',')[1];
+
+        document.getElementById('vorschau-bild').src = komprimiert;
+        document.getElementById('vorschau-bereich').style.display = 'block';
+        document.getElementById('btn-uebersetzen').style.display = 'flex';
+
+        fehlerVerstecken();
+        document.getElementById('karte-erkannt').style.display    = 'none';
+        document.getElementById('karte-uebersetzung').style.display = 'none';
+        document.getElementById('neu-starten').style.display = 'none';
+      })
+      .catch(() => {
+        fehlerAnzeigen('Dieses Bildformat wird nicht unterstützt. Bitte in den iPhone-Einstellungen unter Kamera → Formate → "Maximale Kompatibilität" wählen.');
+      });
+  };
+  img.src = dataUrl;
+}
+
+// ── Hilfsfunktion: Browser spricht Text in einer Sprache ──
+function browserSprechen(text, sprache) {
+  return new Promise((fertig) => {
+    if (!('speechSynthesis' in window)) { fertig(); return; }
+    window.speechSynthesis.cancel();
+    const aussprache  = new SpeechSynthesisUtterance(text);
+    aussprache.lang   = sprache;
+    aussprache.rate   = 0.9;
+    const stimmen     = window.speechSynthesis.getVoices();
+    const passend     = stimmen.find(s => s.lang.startsWith(sprache.split('-')[0]));
+    if (passend) aussprache.voice = passend;
+    aussprache.onend  = fertig;
+    aussprache.onerror = fertig;
+    window.speechSynthesis.speak(aussprache);
+  });
+}
+
+// Stimmen laden (für Web Speech API)
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = function() {
+    // Stimmen werden automatisch geladen
+  };
+}
+
+</script>
+</body>
+</html>
