@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chúc Mừng Sinh Nhật Mami! 🌸</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:wght@400;500&family=Dancing+Script:wght@600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --lilac: #b388d9;
+            --lilac-light: #d4b8e8;
+            --lilac-dark: #7b4fa2;
+            --orchid-pink: #da70d6;
+            --orchid-rose: #e8a0d4;
+            --soft-purple: #f0e6f6;
+            --bg-light: #faf5ff;
+            --bg-white: #ffffff;
+            --text-dark: #3d2552;
+            --text-soft: #6b5080;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Lora', serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* ===== PRELOADER ===== */
+        .preloader {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--bg-light), #ede0f5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+        .preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .preloader-orchid {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: float 2s ease-in-out infinite;
+        }
+        .preloader-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            color: var(--lilac-dark);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; transform: scale(0.98); }
+            50% { opacity: 1; transform: scale(1.02); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        /* ===== ORCHID DECORATIONS ===== */
+        .orchid-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .orchid-float {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.12;
+            animation: orchidDrift 20s linear infinite;
+        }
+
+        @keyframes orchidDrift {
+            0% { transform: translateY(110vh) rotate(0deg); }
+            100% { transform: translateY(-10vh) rotate(360deg); }
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            padding: 2rem;
+            background: linear-gradient(180deg, #f3e8fa 0%, var(--bg-light) 50%, #fce8f4 100%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 1.5s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-orchids {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.5rem;
+        }
+
+        .age-badge {
+            display: flex;
+            width: 130px; height: 130px;
+            border-radius: 50%;
+            border: 3px solid var(--lilac);
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            background: linear-gradient(135deg, rgba(179,136,217,0.1), rgba(218,112,214,0.1));
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        .age-badge span {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--lilac-dark);
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(179,136,217,0.2); }
+            50% { box-shadow: 0 0 50px rgba(218,112,214,0.3); }
+        }
+
+        .hero h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            color: var(--lilac-dark);
+            margin-bottom: 0.8rem;
+            line-height: 1.2;
+        }
+
+        .hero .subtitle {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.1rem, 3vw, 1.5rem);
+            color: var(--text-soft);
+            margin-bottom: 0.5rem;
+            font-style: italic;
+        }
+
+        .hero .date {
+            font-size: 1rem;
+            color: var(--lilac);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-top: 1.5rem;
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s ease-in-out infinite;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .scroll-indicator svg {
+            width: 30px;
+            height: 30px;
+            stroke: var(--lilac);
+            opacity: 0.6;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
+
+        /* ===== SECTIONS ===== */
+        section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 5vw, 2.8rem);
+            color: var(--lilac-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header .orchid-divider {
+            font-size: 1.5rem;
+            margin: 0.8rem 0;
+        }
+
+        .section-header p {
+            color: var(--text-soft);
+            font-style: italic;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+        }
+
+        .divider {
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--lilac), var(--orchid-pink), var(--lilac), transparent);
+            margin: 1.5rem auto;
+        }
+
+        /* ===== PHOTO GALLERY ===== */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            aspect-ratio: 4/3;
+            cursor: pointer;
+            border: 2px solid rgba(179,136,217,0.2);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            background: white;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(179,136,217,0.25);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        /* ===== VIDEO ===== */
+        .video-container {
+            max-width: 700px;
+            margin: 2rem auto;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid rgba(179,136,217,0.2);
+            box-shadow: 0 10px 40px rgba(179,136,217,0.15);
+            background: white;
+        }
+
+        .video-container video {
+            width: 100%;
+            display: block;
+        }
+
+        /* ===== QUOTE SECTION ===== */
+        .quote-section {
+            text-align: center;
+            padding: 5rem 2rem;
+            position: relative;
+            background: linear-gradient(180deg, transparent, rgba(179,136,217,0.06), transparent);
+            border-radius: 30px;
+            margin: 2rem auto;
+        }
+
+        .quote-photo {
+            width: 300px;
+            height: 300px;
+            object-fit: contain;
+            border-radius: 50%;
+            border: 3px solid var(--lilac);
+            box-shadow: 0 0 50px rgba(218,112,214,0.2);
+            margin-bottom: 2.5rem;
+            background: var(--bg-light);
+        }
+
+        .quote-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.2rem, 3vw, 1.6rem);
+            font-style: italic;
+            color: var(--text-dark);
+            max-width: 700px;
+            margin: 0 auto 1.5rem;
+            line-height: 1.8;
+        }
+
+        .quote-translation {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            font-style: italic;
+            color: var(--text-soft);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        /* ===== FINAL MESSAGE ===== */
+        .final-section {
+            text-align: center;
+            padding: 5rem 2rem 4rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .final-section h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            color: var(--lilac-dark);
+            margin-bottom: 1.5rem;
+        }
+
+        .final-section p {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            color: var(--text-soft);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.9;
+        }
+
+        .hearts {
+            font-size: 2.5rem;
+            margin-top: 2rem;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.15); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.1); }
+        }
+
+        /* ===== LIGHTBOX ===== */
+        .lightbox {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(61,37,82,0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 2rem;
+            cursor: pointer;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 0 60px rgba(218,112,214,0.3);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 1.5rem; right: 2rem;
+            font-size: 2rem;
+            color: var(--lilac-light);
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2.5rem;
+            color: var(--lilac-light);
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 1rem;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .lightbox-nav:hover { opacity: 1; }
+        .lightbox-prev { left: 1rem; }
+        .lightbox-next { right: 1rem; }
+
+        /* ===== PETAL CANVAS ===== */
+        #petal-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 9998;
+        }
+
+        /* ===== FADE IN ===== */
+        .fade-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (min-width: 769px) {
+            .fade-in {
+                opacity: 0;
+                transform: translateY(30px);
+                transition: opacity 0.8s ease, transform 0.8s ease;
+            }
+            .fade-in.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.8rem;
+            }
+
+            section {
+                padding: 3rem 1rem;
+            }
+
+            .quote-photo {
+                width: 240px;
+                height: 240px;
+            }
+
+            .hero-orchids {
+                font-size: 2rem;
+            }
+        }
+
+        /* Navigation dots */
+        .nav-dots {
+            position: fixed;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .nav-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            border: 1.5px solid var(--lilac);
+            background: transparent;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .nav-dot.active {
+            background: var(--orchid-pink);
+            border-color: var(--orchid-pink);
+            transform: scale(1.3);
+        }
+
+        @media (max-width: 768px) {
+            .nav-dots { display: none; }
+        }
+
+        /* Section backgrounds */
+        .section-bg-alt {
+            background: linear-gradient(180deg, transparent, rgba(252,232,244,0.4), transparent);
+            border-radius: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Preloader -->
+<div class="preloader" id="preloader">
+    <div class="preloader-orchid">🌸</div>
+    <div class="preloader-text">Dành cho Mami...</div>
+</div>
+
+<!-- Petal animation canvas -->
+<canvas id="petal-canvas"></canvas>
+
+<!-- Floating orchids background -->
+<div class="orchid-bg" id="orchidBg"></div>
+
+<!-- Navigation Dots -->
+<nav class="nav-dots" id="navDots">
+    <div class="nav-dot active" data-target="hero" title="Start"></div>
+    <div class="nav-dot" data-target="wilhelmshaven" title="Wilhelmshaven"></div>
+    <div class="nav-dot" data-target="binz" title="Binz"></div>
+    <div class="nav-dot" data-target="wishes" title="Glückwünsche"></div>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="hero">
+    <div class="hero-content">
+        <div class="hero-orchids">🌸 🌺 🌸</div>
+        <div class="age-badge">
+            <span>58</span>
+        </div>
+        <h1>Chúc Mừng Sinh Nhật Mami!</h1>
+        <p class="subtitle">Alles Gute zum Geburtstag, Mama!</p>
+        <p class="subtitle" style="font-size: clamp(0.9rem, 2.5vw, 1.2rem);">Một cuộc đời tràn đầy yêu thương, sức mạnh và vẻ đẹp</p>
+        <p class="date">10. April 2026 · Ngày 10 tháng 4 năm 2026</p>
+    </div>
+
+    <a href="#wilhelmshaven" class="scroll-indicator">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+            <path d="M7 10l5 5 5-5"/>
+        </svg>
+    </a>
+</header>
+
+<!-- WILHELMSHAVEN -->
+<section id="wilhelmshaven" class="fade-in">
+    <div class="section-header">
+        <h2>Wilhelmshaven</h2>
+        <div class="orchid-divider">🌸</div>
+        <div class="divider"></div>
+        <p>Unser erster gemeinsamer Urlaub — Mai 2025<br>Du lịch đầu tiên của gia đình — Tháng 5, 2025</p>
+    </div>
+
+    <div class="gallery" id="gallery-wh">
+        <div class="gallery-item" onclick="openLightbox('wh', 0)"><img src="Wilhelmshaven/20250505_101514.jpg" alt="Wilhelmshaven" loading="lazy"></div>
+        <div class="gallery-item" onclick="openLightbox('wh', 1)"><img src="Wilhelmshaven/2.jpg" alt="Wilhelmshaven" loading="lazy"></div>
+        <div class="gallery-item" onclick="openLightbox('wh', 2)"><img src="Wilhelmshaven/3.jpg" alt="Wilhelmshaven" loading="lazy"></div>
+        <div class="gallery-item" onclick="openLightbox('wh', 3)"><img src="Wilhelmshaven/4.jpg" alt="Wilhelmshaven" loading="lazy"></div>
+        <div class="gallery-item" onclick="openLightbox('wh', 4)"><img src="Wilhelmshaven/5.jpg" alt="Wilhelmshaven" loading="lazy"></div>
+        <div class="gallery-item" onclick="openLightbox('wh', 5)"><img src="Wilhelmshaven/6.jpg" alt="Wilhelmshaven" loading="lazy"></div>
+        <div class="gallery-item" onclick="openLightbox('wh', 6)"><img src="Wilhelmshaven/7.jpg" alt="Wilhelmshaven" loading="lazy"></div>
+        <div class="gallery-item" onclick="openLightbox('wh', 7)"><img src="Wilhelmshaven/8.jpg" alt="Wilhelmshaven" loading="lazy"></div>
+        <div class="gallery-item" onclick="openLightbox('wh', 8)"><img src="Wilhelmshaven/9.jpg" alt="Wilhelmshaven" loading="lazy"></div>
+    </div>
+
+    <div class="video-container fade-in">
+        <video controls preload="metadata">
+            <source src="Wilhelmshaven/WhatsApp Video 2026-04-05 at 15.06.20.mp4" type="video/mp4">
+        </video>
+    </div>
+</section>
+
+<!-- BINZ -->
+<section id="binz" class="fade-in section-bg-alt">
+    <div class="section-header">
+        <h2>Binz</h2>
+        <div class="orchid-divider">🌺</div>
+        <div class="divider"></div>
+        <p>Sommerurlaub an der Ostsee — Juli 2025<br>Kỳ nghỉ hè bên biển Ostsee — Tháng 7, 2025</p>
+    </div>
+
+    <div class="gallery" id="gallery-binz">
+        <div class="gallery-item" onclick="openLightbox('binz', 0)"><img src="Binz/Unbenannt.jpg" alt="Binz" loading="lazy"></div>
+        <div class="gallery-item" onclick="openLightbox('binz', 1)"><img src="Binz/Unbenannt1.jpg" alt="Binz" loading="lazy"></div>
+        <div class="gallery-item" onclick="openLightbox('binz', 2)"><img src="Binz/20250708_194722.jpg" alt="Binz" loading="lazy"></div>
+        <div class="gallery-item" onclick="openLightbox('binz', 3)"><img src="Binz/20250709_075833.jpg" alt="Binz" loading="lazy"></div>
+        <div class="gallery-item" onclick="openLightbox('binz', 4)"><img src="Binz/20250709_160200.jpg" alt="Binz" loading="lazy"></div>
+        <div class="gallery-item" onclick="openLightbox('binz', 5)"><img src="Binz/20250709_160744(0).jpg" alt="Binz" loading="lazy"></div>
+    </div>
+
+    <div class="video-container fade-in">
+        <video controls preload="metadata">
+            <source src="Binz/20250708_164821.mp4" type="video/mp4">
+        </video>
+    </div>
+</section>
+
+<!-- QUOTE / VIETNAMESE MESSAGE -->
+<section class="quote-section fade-in">
+    <img src="Unbenannt.jpg" alt="Mami" class="quote-photo">
+    <div class="quote-text">
+        Thời gian hãy đi chậm lại, cho ta nhiều thời gian quý giá,
+        có những kỷ niệm giữ mãi trong gia đình, con cái sẽ luôn nhớ mãi.
+    </div>
+    <div class="divider"></div>
+    <div class="quote-translation">
+        Möge die Zeit langsamer vergehen, damit wir noch mehr kostbare Momente zusammen erleben.
+        Erinnerungen, die für immer in unseren Herzen bleiben.
+    </div>
+</section>
+
+<!-- FINAL -->
+<section class="final-section fade-in" id="wishes">
+    <div class="hero-orchids">🌸 🌺 🌸</div>
+    <h2>Chúc Mừng Sinh Nhật Mami!</h2>
+    <div class="divider"></div>
+    <p>
+        Cảm ơn Mami vì tất cả những gì Mami làm cho chúng con.<br>
+        Vì tình yêu, sức mạnh và nụ cười tuyệt đẹp của Mami.<br>
+        Mami là trái tim của gia đình chúng ta.
+        <br><br>
+        Danke für alles, was du für uns tust, Mama.<br>
+        Für deine Liebe, deine Stärke und dein wunderschönes Lächeln.<br>
+        Du bist das Herz unserer Familie.
+        <br><br>
+        ❤️ ❤️ ❤️
+    </p>
+    <div class="hearts">💜</div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+    <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+    <button class="lightbox-nav lightbox-prev" onclick="navigateLightbox(event, -1)">&#8249;</button>
+    <img id="lightbox-img" src="" alt="">
+    <button class="lightbox-nav lightbox-next" onclick="navigateLightbox(event, 1)">&#8250;</button>
+</div>
+
+<script>
+    // ===== IMAGE DATA =====
+    const galleries = {
+        wh: [
+            'Wilhelmshaven/20250505_101514.jpg',
+            'Wilhelmshaven/2.jpg',
+            'Wilhelmshaven/3.jpg',
+            'Wilhelmshaven/4.jpg',
+            'Wilhelmshaven/5.jpg',
+            'Wilhelmshaven/6.jpg',
+            'Wilhelmshaven/7.jpg',
+            'Wilhelmshaven/8.jpg',
+            'Wilhelmshaven/9.jpg'
+        ],
+        binz: [
+            'Binz/Unbenannt.jpg',
+            'Binz/Unbenannt1.jpg',
+            'Binz/20250708_194722.jpg',
+            'Binz/20250709_075833.jpg',
+            'Binz/20250709_160200.jpg',
+            'Binz/20250709_160744(0).jpg'
+        ]
+    };
+
+    let currentGallery = '';
+    let currentIndex = 0;
+
+    // ===== PRELOADER =====
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            document.getElementById('preloader').classList.add('hidden');
+            launchPetals();
+        }, 2000);
+    });
+
+    // ===== FLOATING ORCHIDS BACKGROUND =====
+    const orchidBg = document.getElementById('orchidBg');
+    const orchidEmojis = ['🌸', '🌺', '💮', '✿'];
+    for (let i = 0; i < 15; i++) {
+        const orchid = document.createElement('div');
+        orchid.className = 'orchid-float';
+        orchid.textContent = orchidEmojis[Math.floor(Math.random() * orchidEmojis.length)];
+        orchid.style.left = Math.random() * 100 + '%';
+        orchid.style.animationDuration = (15 + Math.random() * 20) + 's';
+        orchid.style.animationDelay = Math.random() * 15 + 's';
+        orchid.style.fontSize = (1 + Math.random() * 2) + 'rem';
+        orchidBg.appendChild(orchid);
+    }
+
+    // ===== LIGHTBOX =====
+    function openLightbox(gallery, index) {
+        currentGallery = gallery;
+        currentIndex = index;
+        document.getElementById('lightbox-img').src = galleries[gallery][index];
+        document.getElementById('lightbox').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox(e) {
+        if (e && e.target !== e.currentTarget && !e.target.classList.contains('lightbox-close')) return;
+        document.getElementById('lightbox').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    function navigateLightbox(e, dir) {
+        e.stopPropagation();
+        const imgs = galleries[currentGallery];
+        currentIndex = (currentIndex + dir + imgs.length) % imgs.length;
+        document.getElementById('lightbox-img').src = imgs[currentIndex];
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (!document.getElementById('lightbox').classList.contains('active')) return;
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') navigateLightbox(e, -1);
+        if (e.key === 'ArrowRight') navigateLightbox(e, 1);
+    });
+
+    // ===== SCROLL ANIMATIONS =====
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // ===== NAV DOTS =====
+    const sections = ['hero', 'wilhelmshaven', 'binz', 'wishes'];
+    const dots = document.querySelectorAll('.nav-dot');
+
+    dots.forEach(dot => {
+        dot.addEventListener('click', () => {
+            document.getElementById(dot.dataset.target).scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+
+    const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                dots.forEach(d => d.classList.remove('active'));
+                const activeDot = document.querySelector(`.nav-dot[data-target="${entry.target.id}"]`);
+                if (activeDot) activeDot.classList.add('active');
+            }
+        });
+    }, { threshold: 0.3 });
+
+    sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) sectionObserver.observe(el);
+    });
+
+    // ===== PETAL ANIMATION =====
+    function launchPetals() {
+        const canvas = document.getElementById('petal-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const petals = [];
+        const petalColors = ['#d4b8e8', '#e8a0d4', '#da70d6', '#f0c0e8', '#c9a0dc', '#f5d0f0'];
+
+        for (let i = 0; i < 80; i++) {
+            petals.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height - canvas.height,
+                size: Math.random() * 8 + 4,
+                color: petalColors[Math.floor(Math.random() * petalColors.length)],
+                speed: Math.random() * 2 + 0.5,
+                wobble: Math.random() * Math.PI * 2,
+                wobbleSpeed: Math.random() * 0.03 + 0.01,
+                rotation: Math.random() * Math.PI * 2,
+                rotSpeed: (Math.random() - 0.5) * 0.05,
+                opacity: Math.random() * 0.6 + 0.3
+            });
+        }
+
+        let frame = 0;
+        const maxFrames = 400;
+
+        function drawPetal(ctx, x, y, size, rotation, color, opacity) {
+            ctx.save();
+            ctx.globalAlpha = opacity;
+            ctx.translate(x, y);
+            ctx.rotate(rotation);
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.ellipse(0, 0, size * 0.6, size, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        function animate() {
+            frame++;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const globalOpacity = frame > maxFrames - 80 ? (maxFrames - frame) / 80 : 1;
+
+            petals.forEach(p => {
+                p.y += p.speed;
+                p.wobble += p.wobbleSpeed;
+                p.x += Math.sin(p.wobble) * 1;
+                p.rotation += p.rotSpeed;
+
+                drawPetal(ctx, p.x, p.y, p.size, p.rotation, p.color, p.opacity * globalOpacity);
+            });
+
+            if (frame < maxFrames) {
+                requestAnimationFrame(animate);
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    }
+</script>
+
+</body>
+</html>
