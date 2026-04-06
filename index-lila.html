@@ -824,7 +824,124 @@
             canvas.height = window.innerHeight;
         });
     }
+
+    // ===== HAPPY BIRTHDAY MUSIC (Web Audio API) =====
+    let audioCtx = null;
+    let musicPlaying = false;
+    let musicTimeout = null;
+    let musicTimeouts = [];
+    let gainNode = null;
+
+    // Happy Birthday melody - note frequencies and durations
+    const C4=261.63,D4=293.66,E4=329.63,F4=349.23,G4=392,A4=440,Bb4=466.16,C5=523.25;
+    const melody = [
+        // Happy Birthday to you
+        [C4,0.35],[C4,0.15],[D4,0.5],[C4,0.5],[F4,0.5],[E4,1],
+        // Happy Birthday to you
+        [C4,0.35],[C4,0.15],[D4,0.5],[C4,0.5],[G4,0.5],[F4,1],
+        // Happy Birthday dear Mami
+        [C4,0.35],[C4,0.15],[C5,0.5],[A4,0.5],[F4,0.5],[E4,0.5],[D4,1],
+        // Happy Birthday to you
+        [Bb4,0.35],[Bb4,0.15],[A4,0.5],[F4,0.5],[G4,0.5],[F4,1]
+    ];
+
+    function startMusic() {
+        if (musicPlaying) return;
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        gainNode = audioCtx.createGain();
+        gainNode.gain.value = 0.15;
+        gainNode.connect(audioCtx.destination);
+        musicPlaying = true;
+        playMelodyLoop();
+        document.getElementById('musicBtn').textContent = '🎵';
+    }
+
+    function playMelodyLoop() {
+        if (!musicPlaying) return;
+        musicTimeouts = [];
+        let time = audioCtx.currentTime + 0.1;
+
+        melody.forEach(([freq, dur]) => {
+            const osc = audioCtx.createOscillator();
+            const noteGain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = freq;
+            noteGain.gain.setValueAtTime(0, time);
+            noteGain.gain.linearRampToValueAtTime(1, time + 0.05);
+            noteGain.gain.linearRampToValueAtTime(0, time + dur * 0.9);
+            osc.connect(noteGain);
+            noteGain.connect(gainNode);
+            osc.start(time);
+            osc.stop(time + dur);
+            time += dur;
+        });
+
+        // Loop after melody ends
+        const totalDuration = melody.reduce((sum, [, d]) => sum + d, 0);
+        musicTimeout = setTimeout(() => {
+            if (musicPlaying) playMelodyLoop();
+        }, (totalDuration + 1) * 1000);
+    }
+
+    function stopMusic() {
+        musicPlaying = false;
+        if (musicTimeout) clearTimeout(musicTimeout);
+        musicTimeouts.forEach(t => clearTimeout(t));
+        if (audioCtx) {
+            audioCtx.close();
+            audioCtx = null;
+        }
+        document.getElementById('musicBtn').textContent = '🔇';
+    }
+
+    function toggleMusic() {
+        if (musicPlaying) stopMusic();
+        else startMusic();
+    }
+
+    // Pause music when video plays, resume when paused/ended
+    document.querySelectorAll('video').forEach(video => {
+        video.addEventListener('play', () => {
+            if (musicPlaying) {
+                stopMusic();
+                video.dataset.wasPlaying = 'true';
+            }
+        });
+        video.addEventListener('pause', () => {
+            if (video.dataset.wasPlaying === 'true') {
+                startMusic();
+            }
+        });
+        video.addEventListener('ended', () => {
+            if (video.dataset.wasPlaying === 'true') {
+                startMusic();
+                video.dataset.wasPlaying = 'false';
+            }
+        });
+    });
+
+    // Auto-start music after preloader (user interaction needed on mobile)
+    document.addEventListener('click', function autoStart() {
+        if (!musicPlaying) startMusic();
+        document.removeEventListener('click', autoStart);
+    }, { once: true });
 </script>
+
+<!-- Music toggle button -->
+<button id="musicBtn" onclick="toggleMusic()" style="
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    border: 2px solid var(--lilac);
+    background: rgba(255,255,255,0.9);
+    font-size: 1.3rem;
+    cursor: pointer;
+    z-index: 100;
+    box-shadow: 0 4px 15px rgba(179,136,217,0.3);
+    transition: transform 0.2s;
+" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">🎵</button>
 
 </body>
 </html>
