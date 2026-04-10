@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mami — Một cuộc đời phi thường</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Dancing+Script:wght@600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0a0a0a;
+            color: #f5f0e8;
+            font-family: 'Cormorant Garamond', serif;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* ===== SCENE CONTAINER ===== */
+        .scene {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: none;
+            z-index: 1;
+        }
+
+        .scene.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* ===== TYPOGRAPHY ===== */
+        .scene-year {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 10vw, 6rem);
+            font-weight: 700;
+            color: #d4b8e8;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 1s ease, transform 1s ease;
+            margin-bottom: 1rem;
+        }
+
+        .scene.active .scene-year {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .scene-location {
+            font-size: clamp(1rem, 3vw, 1.4rem);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #b388d9;
+            opacity: 0;
+            transition: opacity 1.2s ease 0.5s;
+            margin-bottom: 2rem;
+        }
+
+        .scene.active .scene-location {
+            opacity: 0.7;
+        }
+
+        .scene-text-vn {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            color: #e8a0d4;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1.2s ease 0.8s, transform 1.2s ease 0.8s;
+            max-width: 800px;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .scene.active .scene-text-vn {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .scene-text-de {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1rem, 3vw, 1.4rem);
+            font-style: italic;
+            color: #c0a8d0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1.2s ease 1.2s, transform 1.2s ease 1.2s;
+            max-width: 700px;
+            line-height: 1.8;
+        }
+
+        .scene.active .scene-text-de {
+            opacity: 0.7;
+            transform: translateY(0);
+        }
+
+        /* ===== SPECIAL SCENES ===== */
+
+        /* Intro */
+        .scene-intro .intro-flower {
+            font-size: 4rem;
+            opacity: 0;
+            transition: opacity 1.5s ease 0.3s;
+            margin-bottom: 2rem;
+        }
+        .scene-intro.active .intro-flower { opacity: 1; }
+
+        .scene-intro h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            color: #d4b8e8;
+            opacity: 0;
+            transition: opacity 2s ease 0.8s;
+        }
+        .scene-intro.active h1 { opacity: 1; }
+
+        .scene-intro .intro-sub {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            color: #b388d9;
+            opacity: 0;
+            transition: opacity 1.5s ease 1.5s;
+            margin-top: 1rem;
+            font-style: italic;
+        }
+        .scene-intro.active .intro-sub { opacity: 1; }
+
+        /* Timeline line */
+        .timeline-dot {
+            width: 12px; height: 12px;
+            border-radius: 50%;
+            background: #d4b8e8;
+            margin: 1.5rem auto;
+            opacity: 0;
+            transition: opacity 0.8s ease 0.3s;
+            position: relative;
+        }
+        .timeline-dot::before {
+            content: '';
+            position: absolute;
+            top: -40px; left: 50%;
+            transform: translateX(-50%);
+            width: 1px; height: 40px;
+            background: linear-gradient(transparent, #d4b8e8);
+        }
+        .scene.active .timeline-dot { opacity: 0.5; }
+
+        /* Finale */
+        .scene-finale .finale-hearts {
+            font-size: 3rem;
+            opacity: 0;
+            transition: opacity 1.5s ease 2s;
+            margin-top: 2rem;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+        .scene-finale.active .finale-hearts { opacity: 1; }
+
+        .scene-finale .finale-names {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            color: #b388d9;
+            opacity: 0;
+            transition: opacity 1.5s ease 2.5s;
+            margin-top: 1.5rem;
+            line-height: 2;
+        }
+        .scene-finale.active .finale-names { opacity: 0.6; }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.15); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.1); }
+        }
+
+        /* ===== PARTICLE CANVAS ===== */
+        #particles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ===== PROGRESS BAR ===== */
+        .progress-bar {
+            position: fixed;
+            bottom: 0; left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #b388d9, #da70d6, #e8a0d4);
+            z-index: 100;
+            transition: width 0.5s ease;
+        }
+
+        /* ===== START BUTTON ===== */
+        .start-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #0a0a0a;
+            z-index: 200;
+            cursor: pointer;
+            transition: opacity 1s ease;
+        }
+
+        .start-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .start-screen .play-btn {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            border: 2px solid #d4b8e8;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        .start-screen .play-btn:hover {
+            transform: scale(1.1);
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(179,136,217,0.2); }
+            50% { box-shadow: 0 0 40px rgba(218,112,214,0.4); }
+        }
+
+        .start-screen .play-btn svg {
+            width: 30px; height: 30px;
+            fill: #d4b8e8;
+            margin-left: 5px;
+        }
+
+        .start-screen p {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5rem;
+            color: #d4b8e8;
+            margin-top: 1.5rem;
+        }
+
+        /* ===== BACKGROUND GRADIENTS PER SCENE ===== */
+        .bg-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            transition: background 2s ease;
+            background: radial-gradient(ellipse at center, rgba(179,136,217,0.05) 0%, transparent 70%);
+        }
+
+        /* Scene-specific emoji backgrounds */
+        .scene-emoji {
+            font-size: clamp(3rem, 8vw, 5rem);
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transition: opacity 1s ease 0.2s;
+        }
+        .scene.active .scene-emoji { opacity: 0.8; }
+    </style>
+</head>
+<body>
+
+<!-- Start Screen -->
+<div class="start-screen" id="startScreen" onclick="startVideo()">
+    <div class="play-btn">
+        <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+    </div>
+    <p>Nhấn để bắt đầu · Tippen zum Starten</p>
+</div>
+
+<!-- Particles -->
+<canvas id="particles"></canvas>
+<div class="bg-overlay" id="bgOverlay"></div>
+
+<!-- Progress Bar -->
+<div class="progress-bar" id="progressBar" style="width: 0%"></div>
+
+<!-- SCENE 0: INTRO -->
+<div class="scene scene-intro" id="scene-0">
+    <div class="intro-flower">🌸</div>
+    <h1>Một cuộc đời phi thường</h1>
+    <p class="intro-sub">Ein außergewöhnliches Leben</p>
+</div>
+
+<!-- SCENE 1: BIRTH -->
+<div class="scene" id="scene-1">
+    <div class="scene-emoji">👶</div>
+    <div class="scene-year">1968</div>
+    <div class="scene-location">Sài Gòn, Việt Nam</div>
+    <div class="timeline-dot"></div>
+    <div class="scene-text-vn">Một bé gái chào đời tại Sài Gòn</div>
+    <div class="scene-text-de">Ein Mädchen wird in Saigon geboren — am 10. April 1968</div>
+</div>
+
+<!-- SCENE 2: GROWING UP -->
+<div class="scene" id="scene-2">
+    <div class="scene-emoji">🌱</div>
+    <div class="scene-year">1968–1987</div>
+    <div class="scene-location">Sài Gòn</div>
+    <div class="timeline-dot"></div>
+    <div class="scene-text-vn">Lớn lên trong tình yêu thương gia đình,<br>luôn chăm sóc anh chị em, cháu gái, cháu trai</div>
+    <div class="scene-text-de">Aufgewachsen in der Liebe der Familie — immer für Geschwister, Nichten und Neffen da</div>
+</div>
+
+<!-- SCENE 3: COMING TO GERMANY -->
+<div class="scene" id="scene-3">
+    <div class="scene-emoji">✈️</div>
+    <div class="scene-year">1987</div>
+    <div class="scene-location">Sài Gòn → DDR</div>
+    <div class="timeline-dot"></div>
+    <div class="scene-text-vn">Rời quê hương, bắt đầu cuộc sống mới ở Đức</div>
+    <div class="scene-text-de">Mit Mut und Stärke — ein neues Leben in der DDR beginnt</div>
+</div>
+
+<!-- SCENE 4: WALL FALLS -->
+<div class="scene" id="scene-4">
+    <div class="scene-emoji">🕊️</div>
+    <div class="scene-year">1990</div>
+    <div class="scene-location">Mespelbrunn · Aschaffenburg</div>
+    <div class="timeline-dot"></div>
+    <div class="scene-text-vn">Bức tường sụp đổ — một chương mới bắt đầu</div>
+    <div class="scene-text-de">Die Mauer fällt — Neuanfang in Mespelbrunn, Aschaffenburg</div>
+</div>
+
+<!-- SCENE 5: SON BORN -->
+<div class="scene" id="scene-5">
+    <div class="scene-emoji">🍼</div>
+    <div class="scene-year">1990</div>
+    <div class="scene-location">Deutschland</div>
+    <div class="timeline-dot"></div>
+    <div class="scene-text-vn">Con trai duy nhất chào đời — Dang Tu Nguyen</div>
+    <div class="scene-text-de">Ihr einziger Sohn wird geboren — Dang Tu Nguyen</div>
+</div>
+
+<!-- SCENE 6: STRONG WOMAN -->
+<div class="scene" id="scene-6">
+    <div class="scene-emoji">💪</div>
+    <div class="scene-year">1990–2026</div>
+    <div class="scene-location">Deutschland</div>
+    <div class="timeline-dot"></div>
+    <div class="scene-text-vn">Một người phụ nữ mạnh mẽ, độc lập<br>chăm sóc cha mẹ, anh chị em, gia đình</div>
+    <div class="scene-text-de">Eine starke, unabhängige Frau — kümmert sich um ihre Eltern, Geschwister und die ganze Familie</div>
+</div>
+
+<!-- SCENE 7: FAMILY -->
+<div class="scene" id="scene-7">
+    <div class="scene-emoji">👨‍👩‍👦</div>
+    <div class="scene-year">Gia đình</div>
+    <div class="scene-location">Familie</div>
+    <div class="timeline-dot"></div>
+    <div class="scene-text-vn">Dành cả cuộc đời cho gia đình<br>Chồng Quốc Khải, con trai Đăng Tú, con dâu Hoàng Yến</div>
+    <div class="scene-text-de">Ihr ganzes Leben hat sie der Familie gewidmet</div>
+</div>
+
+<!-- SCENE 8: HEART OF FAMILY -->
+<div class="scene" id="scene-8">
+    <div class="scene-emoji">🌸</div>
+    <div class="scene-year">Trái tim</div>
+    <div class="scene-location">Das Herz</div>
+    <div class="timeline-dot"></div>
+    <div class="scene-text-vn">Mami là trái tim của gia đình chúng ta<br>Không ai yêu thương nhiều hơn Mami</div>
+    <div class="scene-text-de">Mami ist das Herz unserer Familie — niemand liebt so sehr wie sie</div>
+</div>
+
+<!-- SCENE 9: TODAY -->
+<div class="scene" id="scene-9">
+    <div class="scene-emoji">🎂</div>
+    <div class="scene-year">2026</div>
+    <div class="scene-location">58 năm · 58 Jahre</div>
+    <div class="timeline-dot"></div>
+    <div class="scene-text-vn">58 năm cuộc đời tuyệt đẹp</div>
+    <div class="scene-text-de">58 Jahre eines wunderschönen Lebens</div>
+</div>
+
+<!-- SCENE 10: FINALE -->
+<div class="scene scene-finale" id="scene-10">
+    <div class="scene-emoji" style="font-size: 3rem;">🌸 🌺 🌸</div>
+    <div class="scene-year" style="font-size: clamp(2rem, 7vw, 4rem);">Chúc Mừng Sinh Nhật Mami!</div>
+    <div class="scene-text-vn" style="transition-delay: 1s;">Cảm ơn Mami vì tất cả</div>
+    <div class="scene-text-de" style="transition-delay: 1.5s;">Danke für alles, Mama</div>
+    <div class="finale-hearts">💗 💗 💗</div>
+    <div class="finale-names">
+        Quốc Khải · Đăng Tú · Hoàng Yến
+    </div>
+</div>
+
+<script>
+    const totalScenes = 11;
+    const sceneDuration = 6000; // 6 Sekunden pro Szene
+    let currentScene = -1;
+    let isRunning = false;
+
+    // ===== HAPPY BIRTHDAY MUSIC =====
+    let audioCtx = null;
+    let gainNode = null;
+    let musicPlaying = false;
+    let musicTimeout = null;
+
+    const C4=261.63,D4=293.66,E4=329.63,F4=349.23,G4=392,A4=440,Bb4=466.16,C5=523.25;
+    const melody = [
+        [C4,0.35],[C4,0.15],[D4,0.5],[C4,0.5],[F4,0.5],[E4,1],
+        [C4,0.35],[C4,0.15],[D4,0.5],[C4,0.5],[G4,0.5],[F4,1],
+        [C4,0.35],[C4,0.15],[C5,0.5],[A4,0.5],[F4,0.5],[E4,0.5],[D4,1],
+        [Bb4,0.35],[Bb4,0.15],[A4,0.5],[F4,0.5],[G4,0.5],[F4,1]
+    ];
+
+    function startBgMusic() {
+        if (musicPlaying) return;
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        gainNode = audioCtx.createGain();
+        gainNode.gain.value = 0.12;
+        gainNode.connect(audioCtx.destination);
+        musicPlaying = true;
+        playMelodyLoop();
+    }
+
+    function playMelodyLoop() {
+        if (!musicPlaying) return;
+        let time = audioCtx.currentTime + 0.1;
+        melody.forEach(([freq, dur]) => {
+            const osc = audioCtx.createOscillator();
+            const noteGain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = freq;
+            noteGain.gain.setValueAtTime(0, time);
+            noteGain.gain.linearRampToValueAtTime(1, time + 0.05);
+            noteGain.gain.linearRampToValueAtTime(0, time + dur * 0.9);
+            osc.connect(noteGain);
+            noteGain.connect(gainNode);
+            osc.start(time);
+            osc.stop(time + dur);
+            time += dur;
+        });
+        const totalDur = melody.reduce((s, [, d]) => s + d, 0);
+        musicTimeout = setTimeout(() => { if (musicPlaying) playMelodyLoop(); }, (totalDur + 0.5) * 1000);
+    }
+
+    // ===== START VIDEO =====
+    function startVideo() {
+        document.getElementById('startScreen').classList.add('hidden');
+        startBgMusic();
+        startParticles();
+        setTimeout(() => {
+            isRunning = true;
+            nextScene();
+        }, 800);
+    }
+
+    // ===== SCENE MANAGEMENT =====
+    function nextScene() {
+        if (!isRunning) return;
+
+        // Vorherige Szene ausblenden
+        if (currentScene >= 0) {
+            const prev = document.getElementById('scene-' + currentScene);
+            if (prev) {
+                prev.style.transition = 'opacity 1.5s ease';
+                prev.classList.remove('active');
+            }
+        }
+
+        currentScene++;
+
+        if (currentScene >= totalScenes) {
+            // Ende
+            return;
+        }
+
+        // Neue Szene einblenden
+        setTimeout(() => {
+            const scene = document.getElementById('scene-' + currentScene);
+            if (scene) {
+                scene.style.transition = 'opacity 1.5s ease';
+                scene.classList.add('active');
+            }
+
+            // Fortschrittsbalken
+            const progress = ((currentScene + 1) / totalScenes) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+
+            // Nächste Szene nach Dauer
+            const dur = currentScene === 0 ? 4000 :
+                        currentScene === totalScenes - 1 ? 12000 :
+                        sceneDuration;
+            setTimeout(nextScene, dur);
+        }, 800);
+    }
+
+    // ===== PARTICLES =====
+    function startParticles() {
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        const colors = ['#d4b8e8', '#e8a0d4', '#b388d9', '#da70d6'];
+
+        for (let i = 0; i < 40; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 3 + 1,
+                speedY: -(Math.random() * 0.3 + 0.1),
+                speedX: (Math.random() - 0.5) * 0.3,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                opacity: Math.random() * 0.4 + 0.1,
+                pulse: Math.random() * Math.PI * 2,
+                pulseSpeed: Math.random() * 0.02 + 0.005
+            });
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach(p => {
+                p.y += p.speedY;
+                p.x += p.speedX;
+                p.pulse += p.pulseSpeed;
+
+                if (p.y < -10) p.y = canvas.height + 10;
+                if (p.x < -10) p.x = canvas.width + 10;
+                if (p.x > canvas.width + 10) p.x = -10;
+
+                const alpha = p.opacity * (0.5 + 0.5 * Math.sin(p.pulse));
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = alpha;
+                ctx.fill();
+            });
+
+            ctx.globalAlpha = 1;
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    }
+</script>
+
+</body>
+</html>
